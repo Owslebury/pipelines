@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import json
 from skimage.metrics import structural_similarity as ssim
+from graph import colourmap
 from methods import *
 from filters import *
 
@@ -14,7 +15,8 @@ def pipeline_1(method, x_dim=None, y_dim=None):
     if x_dim is not None and y_dim is not None:
         block_average_png_to_json(folderA, file, 4, 4)
         block_average_png_to_json(folderB, file, 4, 4)
-    iterateThroughImages(file, method)
+    iterateThroughImages(folderA, folderB, method)
+    colourmap(method, "results.json")
 
 
 def pipeline_2(area_of_interest=None, grid_resolution=None):
