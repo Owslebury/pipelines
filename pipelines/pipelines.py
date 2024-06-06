@@ -1,4 +1,3 @@
-
 import argparse
 import os
 import cv2
@@ -6,15 +5,22 @@ import numpy as np
 import json
 from skimage.metrics import structural_similarity as ssim
 from methods import *
+from filters import *
 
-def pipeline_1(method, x_dim, y_dim):
-    print("foghreoig")
-    iterateThroughImages(method)
+def pipeline_1(method, x_dim=None, y_dim=None):
+    folderA = r"C:\Users\jonat\Documents\doors\doorA"
+    folderB = r"C:\Users\jonat\Documents\doors\doorB"
+    file = "doorA_resized"
+    if x_dim is not None and y_dim is not None:
+        block_average_png_to_json(folderA, file, 4, 4)
+        block_average_png_to_json(folderB, file, 4, 4)
+    iterateThroughImages(file, method)
+
 
 def pipeline_2(area_of_interest=None, grid_resolution=None):
     pass
 
-def iterateThroughImages(method):
+def iterateThroughImages(folderA, folderB, method):
 
     comparison_techniques = {
         "PSNR": psnr,
@@ -26,11 +32,7 @@ def iterateThroughImages(method):
         "Absolute Difference": abs_diff,
         "Correlation Coefficient": correlation,
         "Bhattacharyya Distance": bhattacharyya
-    }
-
-    # Path to the directories containing the images
-    folderA = r"C:\Users\jonat\Documents\doors\doorA"
-    folderB = r"C:\Users\jonat\Documents\doors\doorB"
+    }    
 
     # Initialize dictionary to store results
     results = {}
@@ -55,6 +57,8 @@ def iterateThroughImages(method):
     with open("results.json", "w") as f:
         json.dump(results, f)
 
+    print("Saved to results.json")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Command Line Interface for Pipelines")
 
@@ -63,8 +67,7 @@ if __name__ == "__main__":
     # Pipeline 1
     pipeline1_parser = subparsers.add_parser("pipeline1", help="Pipeline 1")
     pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "DSSIM", "Histogram Intersection", "EMD", "Absolute Difference", "Correlation Coefficient", "Bhattacharyya Distance", "RMSE"], help="Method")
-    pipeline1_parser.add_argument("x_dim", type=int, help="X dimension")
-    pipeline1_parser.add_argument("y_dim", type=int, help="Y dimension")
+    pipeline1_parser.add_argument("dimensions", nargs=2, type=int, help="Dimensions (x_dim, y_dim)")
 
     # Pipeline 2
     pipeline2_parser = subparsers.add_parser("pipeline2", help="Pipeline 2")
@@ -75,6 +78,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.pipeline == "pipeline1":
-        pipeline_1(args.method, args.x_dim, args.y_dim)
+        if len(args.dimensions) == 2:
+            pipeline_1(args.method, args.dimensions[0], args.dimensions[1])
+        else:
+            print("Please provide both x_dim and y_dim.")
     elif args.pipeline == "pipeline2":
         pipeline_2(args.area_of_interest, args.grid_resolution)

@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f5d8df8a-14e7-43aa-81b8-926603e1ce53</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>pipelines.py</StartupFile>
+    <StartupFile>blockAveraging.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="blockAveraging.py" />
+    <Compile Include="graph.py" />
     <Compile Include="methods.py" />
     <Compile Include="pipelines.py" />
   </ItemGroup>
