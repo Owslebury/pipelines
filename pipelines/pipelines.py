@@ -9,26 +9,7 @@ from methods import *
 
 def pipeline_1(method, x_dim, y_dim):
     print("foghreoig")
-    if method == "PSNR":
-        pass
-    elif method == "MAE":
-        pass
-    elif method == "NCC":
-        pass
-    elif method == "DSSIM":
-        pass
-    elif method == "Histogram Intersection":
-        pass
-    elif method == "EMD":
-        pass
-    elif method == "Absolute Difference":
-        pass
-    elif method == "Correlation Coefficient":
-        pass
-    elif method == "Bhattacharyya Distance":
-        pass
-    elif method == "RMSE":
-        pass
+    iterateThroughImages(method)
 
 def pipeline_2(area_of_interest=None, grid_resolution=None):
     pass
@@ -62,13 +43,17 @@ def iterateThroughImages(method):
             if imageA is None or imageB is None:
                 continue
             image_results = {}
-            for technique, function in comparison_techniques.items():
-                try:
-                    result = function(imageA, imageB)
-                    image_results[technique] = result
-                except Exception as e:
-                    image_results[technique] = str(e)
-            results[filename] = image_results
+
+            function = comparison_techniques[method]
+            try:
+                result = function(imageA, imageB)
+                image_results[method] = result
+            except Exception as e:
+                image_results[method] = str(e)
+        results[filename] = image_results
+
+    with open("results.json", "w") as f:
+        json.dump(results, f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Command Line Interface for Pipelines")
