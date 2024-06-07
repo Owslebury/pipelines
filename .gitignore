@@ -372,3 +372,5 @@ FodyWeavers.xsd
 /pipelines/doorA
 /pipelines/doorB
 /pipelines/methods.py
+/pipelines/doorAtest
+/pipelines/doorBtest
