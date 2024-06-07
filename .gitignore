@@ -374,3 +374,10 @@ FodyWeavers.xsd
 /pipelines/methods.py
 /pipelines/doorAtest
 /pipelines/doorBtest
+
+
+# Exclude all directories
+**/*
+
+# Include Python files
+!**/*.py
