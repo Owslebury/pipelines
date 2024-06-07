@@ -44,7 +44,7 @@ def iterateThroughImages(folderA, folderB, method):
         "PSNR": psnr,
         "MAE": mae,
         "NCC": ncc,
-        "DSSIM": dssim,
+        "SSIM": lambda imgA, imgB: ssim(imgA, imgB, **kwargs),
         "Histogram Intersection": histogram_intersection,
         "EMD": emd,
         "Absolute Difference": abs_diff,
@@ -101,13 +101,16 @@ def check_image_dimensions(folder, x_dim, y_dim):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Command Line Interface for Pipelines")
-
     subparsers = parser.add_subparsers(dest="pipeline")
 
     # Pipeline 1
     pipeline1_parser = subparsers.add_parser("pipeline1", help="Pipeline 1")
-    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "DSSIM", "Histogram Intersection", "EMD", "Absolute Difference", "Correlation Coefficient", "Bhattacharyya Distance", "RMSE"], help="Method")
+    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "Histogram Intersection", "EMD", "Absolute Difference", "Correlation Coefficient", "Bhattacharyya Distance", "RMSE"], help="Method")
     pipeline1_parser.add_argument("dimensions", nargs='*', type=int, help="Dimensions (x_dim, y_dim)")
+
+    # SSIM specific arguments
+    pipeline1_parser.add_argument("--gaussian_weights", type=bool, default=True, help="Use Gaussian weights for SSIM")
+    pipeline1_parser.add_argument("--sigma", type=float, default=1.5, help="Sigma for SSIM")
 
     # Pipeline 2
     pipeline2_parser = subparsers.add_parser("pipeline2", help="Pipeline 2")
@@ -115,21 +118,20 @@ if __name__ == "__main__":
     group.add_argument("--area-of-interest", help="Area of interest")
     group.add_argument("--grid-resolution", help="Grid resolution")
 
-    filter_parser = subparsers.add_parser("filter", help="Apply a filter to images in two folders")
-    filter_parser.add_argument("filter_name", choices=["greyscale"], help="Filter to apply")
-    filter_parser.add_argument("input_folderA", help="First input folder")
-    filter_parser.add_argument("input_folderB", help="Second input folder")
-    filter_parser.add_argument("output_folderA", help="First output folder")
-    filter_parser.add_argument("output_folderB", help="Second output folder")
-
     args = parser.parse_args()
 
     if args.pipeline == "pipeline1":
-        if len(args.dimensions) == 2:
-            pipeline_1(args.method, args.dimensions[0], args.dimensions[1])
-        elif len(args.dimensions) == 0:
-            pipeline_1(args.method)
+        kwargs = {}
+        if args.method == "SSIM":
+            kwargs['gaussian_weights'] = args.gaussian_weights
+            kwargs['sigma'] = args.sigma
+
+        if args.dimensions:
+            if len(args.dimensions) == 2:
+                pipeline_1(args.method, args.dimensions[0], args.dimensions[1], **kwargs)
+            else:
+                print("Please provide both x_dim and y_dim.")
         else:
-            print("Please provide both x_dim and y_dim or leave them out completely.")
+            pipeline_1(args.method)
     elif args.pipeline == "pipeline2":
         pipeline_2(args.area_of_interest, args.grid_resolution)

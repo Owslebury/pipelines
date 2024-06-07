@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
+from skimage import io
 
 def mse(imageA, imageB):
     err = np.sum((imageA.astype("float") - imageB.astype("float")) ** 2)
@@ -24,10 +25,14 @@ def ncc(imageA, imageB):
     denom = np.sqrt(np.sum((imageA - np.mean(imageA)) ** 2) * np.sum((imageB - np.mean(imageB)) ** 2))
     return float(num / denom)  # Ensure NCC is converted to float
 
-# Function to calculate the Structural Dissimilarity Index (DSSIM)
-def dssim(imageA, imageB, win_size=7, gaussian_weights=True, sigma=1.5):
-    ssim_value = ssim(imageA, imageB, multichannel=True, win_size=win_size, gaussian_weights=gaussian_weights, sigma=sigma)
-    return float(1 - ssim_value)  # Ensure DSSIM is converted to float
+def ssim(img1, img2, gaussian_weights=True, sigma=1.5):
+    # Convert images to grayscale
+    gray1 = io.imread(img1, as_gray=True)
+    gray2 = io.imread(img2, as_gray=True)
+    # Compute SSIM
+    score = ssim(gray1, gray2, data_range=gray2.max() - gray2.min(), gaussian_weights=gaussian_weights, sigma=sigma)
+    print(score)
+    return score
 
 # Function to calculate Histogram Intersection
 def histogram_intersection(imageA, imageB):
