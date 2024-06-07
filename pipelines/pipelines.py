@@ -13,11 +13,15 @@ def pipeline_1(method, x_dim=None, y_dim=None):
     folderB = r"C:\Users\jonat\Documents\doors\doorB"
     
     if x_dim is not None and y_dim is not None:
-        print("ROIGHREWGOIERHGOIREGHOIREHGREOIGHREIUGHREOIGHRGOI")
-        block_average_png_to_json(folderA, "resizedA", x_dim, y_dim)  # 'file_placeholder' to be replaced with actual file handling
-        block_average_png_to_json(folderB, "resizedB", x_dim, y_dim)
+        if not (check_image_dimensions("resizedA", x_dim, y_dim) and check_image_dimensions("resizedB", x_dim, y_dim)):
+            print("Resizing images to dimensions:", x_dim, y_dim)
+            block_average_png_to_json(folderA, "resizedA", x_dim, y_dim)
+            block_average_png_to_json(folderB, "resizedB", x_dim, y_dim)
+        else:
+            print("Resized images with matching dimensions already exist.")
         folderA = "resizedA"
         folderB = "resizedB"
+
     iterateThroughImages(folderA, folderB, method)
     colourmap(method, "results.json")
 
@@ -51,8 +55,8 @@ def iterateThroughImages(folderA, folderB, method):
     results = {}
 
     for filename in os.listdir(folderA):
-        print(filename)
         if filename.endswith(".png"):
+            print(filename)
             imageA = cv2.imread(os.path.join(folderA, filename))
             imageB = cv2.imread(os.path.join(folderB, filename))
             if imageA is None or imageB is None:
@@ -65,12 +69,35 @@ def iterateThroughImages(folderA, folderB, method):
                 image_results[method] = result
             except Exception as e:
                 image_results[method] = str(e)
-        results[filename] = image_results
+            results[filename] = image_results
 
     with open("results.json", "w") as f:
         json.dump(results, f)
 
     print("Saved to results.json")
+
+def check_image_dimensions(folder, x_dim, y_dim):
+    # Check if folder exists
+    if not os.path.exists(folder):
+        return False
+
+    # List all files in the directory
+    files = os.listdir(folder)
+    if not files:
+        return False
+
+    # Read the first PNG image
+    first_image_path = os.path.join(folder, files[1])
+    if not first_image_path.lower().endswith(".png"):
+        return False
+
+    # Get image dimensions
+    image = cv2.imread(first_image_path)
+    if image is None:
+        return False
+
+    # Check if dimensions match
+    return image.shape[1] == x_dim and image.shape[0] == y_dim
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Command Line Interface for Pipelines")
