@@ -366,3 +366,5 @@ FodyWeavers.xsd
 /pipelines/doorA_greyscale
 /pipelines/doorB_greyscale
 /pipelines/file_placeholder
+/pipelines/resizedA
+/pipelines/graph.py
