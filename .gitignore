@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /pipelines/results.json
 /pipelines/doorA_resized
+/pipelines/doorA_greyscale
+/pipelines/doorB_greyscale
