@@ -14,18 +14,26 @@ def pipeline_1(method, x_dim=None, y_dim=None):
     
     if x_dim is not None and y_dim is not None:
         print("ROIGHREWGOIERHGOIREGHOIREHGREOIGHREIUGHREOIGHRGOI")
-        block_average_png_to_json(folderA, "file_placeholder", x_dim, y_dim)  # 'file_placeholder' to be replaced with actual file handling
-        block_average_png_to_json(folderB, "file_placeholder", x_dim, y_dim)
-    
-    greyscale(folderA, "doorA_greyscale")
-    greyscale(folderB, "doorB_greyscale")
-    folderA = "doorA_greyscale"
-    folderB = "doorB_greyscale"
+        block_average_png_to_json(folderA, "resizedA", x_dim, y_dim)  # 'file_placeholder' to be replaced with actual file handling
+        block_average_png_to_json(folderB, "resizedB", x_dim, y_dim)
+        folderA = "resizedA"
+        folderB = "resizedB"
     iterateThroughImages(folderA, folderB, method)
     colourmap(method, "results.json")
 
 def pipeline_2(area_of_interest=None, grid_resolution=None):
     pass
+
+def apply_filter_to_images(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
+    filters = {
+        "greyscale": greyscale,
+        # Add other filters here as needed
+    }
+
+    if filter_name not in filters:
+        raise ValueError(f"Unknown filter: {filter_name}")
+
+    filter_function = filters[filter_name]
 
 def iterateThroughImages(folderA, folderB, method):
     comparison_techniques = {
@@ -79,6 +87,13 @@ if __name__ == "__main__":
     group = pipeline2_parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--area-of-interest", help="Area of interest")
     group.add_argument("--grid-resolution", help="Grid resolution")
+
+    filter_parser = subparsers.add_parser("filter", help="Apply a filter to images in two folders")
+    filter_parser.add_argument("filter_name", choices=["greyscale"], help="Filter to apply")
+    filter_parser.add_argument("input_folderA", help="First input folder")
+    filter_parser.add_argument("input_folderB", help="Second input folder")
+    filter_parser.add_argument("output_folderA", help="First output folder")
+    filter_parser.add_argument("output_folderB", help="Second output folder")
 
     args = parser.parse_args()
 
