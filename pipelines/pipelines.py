@@ -11,10 +11,13 @@ from filters import *
 def pipeline_1(method, x_dim=None, y_dim=None):
     folderA = r"C:\Users\jonat\Documents\doors\doorA"
     folderB = r"C:\Users\jonat\Documents\doors\doorB"
-    file = "doorA_resized"
-    if x_dim is not None and y_dim is not None:
+    '''if x_dim is not None and y_dim is not None:
         block_average_png_to_json(folderA, file, 4, 4)
-        block_average_png_to_json(folderB, file, 4, 4)
+        block_average_png_to_json(folderB, file, 4, 4)'''
+    greyscale(folderA, "doorA_greyscale")
+    greyscale(folderB, "doorB_greyscale")
+    folderA = "doorA_greyscale"
+    folderB = "doorB_greyscale"
     iterateThroughImages(folderA, folderB, method)
     colourmap(method, "results.json")
 

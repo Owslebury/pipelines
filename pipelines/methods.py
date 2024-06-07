@@ -25,8 +25,9 @@ def ncc(imageA, imageB):
     return float(num / denom)  # Ensure NCC is converted to float
 
 # Function to calculate the Structural Dissimilarity Index (DSSIM)
-def dssim(imageA, imageB):
-    return float(1 - ssim(imageA, imageB, multichannel=True))  # Ensure DSSIM is converted to float
+def dssim(imageA, imageB, win_size=7, gaussian_weights=True, sigma=1.5):
+    ssim_value = ssim(imageA, imageB, multichannel=True, win_size=win_size, gaussian_weights=gaussian_weights, sigma=sigma)
+    return float(1 - ssim_value)  # Ensure DSSIM is converted to float
 
 # Function to calculate Histogram Intersection
 def histogram_intersection(imageA, imageB):
@@ -53,3 +54,11 @@ def bhattacharyya(imageA, imageB):
     histA = cv2.calcHist([imageA], [0], None, [256], [0, 256])
     histB = cv2.calcHist([imageB], [0], None, [256], [0, 256])
     return float(cv2.compareHist(histA, histB, cv2.HISTCMP_BHATTACHARYYA))  # Ensure Bhattacharyya Distance is converted to float
+
+# New function to calculate color histogram comparison
+def color_histogram_comparison(imageA, imageB):
+    histA = cv2.calcHist([imageA], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
+    histB = cv2.calcHist([imageB], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
+    cv2.normalize(histA, histA)
+    cv2.normalize(histB, histB)
+    return float(cv2.compareHist(histA, histB, cv2.HISTCMP_CORREL))  # Ensure Color Histogram Comparison is converted to float
