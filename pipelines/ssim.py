@@ -3,6 +3,7 @@ import argparse
 from skimage import io
 from skimage.metrics import structural_similarity as ssim
 import json
+from graph import colourmap
 
 def compute_ssim(img1, img2, gaussian_weights=True, sigma=1.5):
     # Convert images to grayscale
@@ -16,11 +17,12 @@ def process_images(directory1, directory2, gaussian_weights=True, sigma=1.5):
     ssim_dict = {}
     for filename in os.listdir(directory1):
         if filename.endswith(".png"):
-            print(filename)
-            ssim_score = compute_ssim(os.path.join(directory1, filename), os.path.join(directory2, filename), gaussian_weights=gaussian_weights, sigma=sigma)
-        print(filename)
-        # Store SSIM score in dictionary
-        ssim_dict[filename] = ssim_score
+            img1_path = os.path.join(directory1, filename)
+            print(img1_path)
+            img2_path = os.path.join(directory2, filename)
+            ssim_score = compute_ssim(img1_path, img2_path, gaussian_weights=gaussian_weights, sigma=sigma)
+            # Store SSIM score in dictionary
+            ssim_dict[filename] = {"SSIM": ssim_score}
     return ssim_dict
 
 def save_to_json(data, filename):
@@ -37,6 +39,7 @@ def main():
 
     ssim_dict = process_images(args.directory1, args.directory2, gaussian_weights=args.gaussian, sigma=args.sigma)
     save_to_json(ssim_dict, "ssim_results.json")
+    colourmap("SSIM", "ssim_results.json")
 
 if __name__ == "__main__":
     main()
