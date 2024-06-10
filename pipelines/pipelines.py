@@ -26,11 +26,13 @@ def pipeline_1(method, x_dim=None, y_dim=None):
     colourmap(method, "results.json")
 
 def pipeline_2(area_of_interest=None, grid_resolution=None):
+
     pass
 
 def apply_filter_to_images(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
     filters = {
         "greyscale": greyscale,
+        "colour": replaceColour
         # Add other filters here as needed
     }
 

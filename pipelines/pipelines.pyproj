@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="crop.py" />
     <Compile Include="filters.py" />
     <Compile Include="graph.py" />
     <Compile Include="methods.py" />
