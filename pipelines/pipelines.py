@@ -7,6 +7,7 @@ from skimage.metrics import structural_similarity as ssim
 from graph import colourmap
 from methods import *
 from filters import *
+from crop import *
 
 def pipeline_1(method, x_dim=None, y_dim=None):
     folderA = r"C:\Users\jonat\Documents\doors\doorA"
@@ -25,8 +26,8 @@ def pipeline_1(method, x_dim=None, y_dim=None):
     iterateThroughImages(folderA, folderB, method)
     colourmap(method, "results.json")
 
-def pipeline_2(area_of_interest=None, grid_resolution=None):
-
+def pipeline_2(filename=None):
+    crop_image(filename)
     pass
 
 def apply_filter_to_images(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
@@ -116,10 +117,7 @@ if __name__ == "__main__":
 
     # Pipeline 2
     pipeline2_parser = subparsers.add_parser("pipeline2", help="Pipeline 2")
-    group = pipeline2_parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--area-of-interest", help="Area of interest")
-    group.add_argument("--grid-resolution", help="Grid resolution")
-
+    pipeline2_parser.add_argument("filename")
     args = parser.parse_args()
 
     if args.pipeline == "pipeline1":
@@ -136,4 +134,4 @@ if __name__ == "__main__":
         else:
             pipeline_1(args.method)
     elif args.pipeline == "pipeline2":
-        pipeline_2(args.area_of_interest, args.grid_resolution)
+        pipeline_2(args.filename)
