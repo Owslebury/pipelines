@@ -69,3 +69,37 @@ def greyscale(input_folder, output_folder):
                 gray_img.save(output_path)
 
                 print(f"Converted {file} to grayscale.")
+
+
+def replaceColour(input_image_path, output_image_path):
+    # Open an image file
+    with Image.open(input_image_path) as img:
+        # Convert image to RGBA (if not already in RGBA)
+        img = img.convert("RGBA")
+        # Get the data of the image
+        data = img.getdata()
+        
+        # Define the target color and the replacement color
+        target_color = (41, 255, 168, 255)  # #29ffa8
+        replacement_color = (255, 192, 203, 255)  # Pink
+        
+        # Create a new data list with the modified colors
+        new_data = []
+        for item in data:
+            if item == target_color:
+                new_data.append(replacement_color)
+            else:
+                new_data.append(item)
+        
+        # Update image data with the new data
+        img.putdata(new_data)
+        
+        # Save the modified image
+        img.save(output_image_path)
+        print(f"Image saved to {output_image_path}")
+
+# Example usage
+input_image_path = 'input_image.png'  # Replace with your input image path
+output_image_path = 'output_image.png'  # Replace with your desired output image path
+
+change_pixel_color(input_image_path, output_image_path)
