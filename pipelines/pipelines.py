@@ -30,18 +30,22 @@ def resize(x_dim, y_dim, folderA, folderB):
             print("Resized images with matching dimensions already exist.")
 
 def filterImage(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
-
     filters = {
         "greyscale": greyscale,
         "colour": replaceColour
         # Add other filters here as needed
     }
 
-
     if filter_name not in filters:
         raise ValueError(f"Unknown filter: {filter_name}")
 
     filter_function = filters[filter_name]
+
+    # Ensure output folders exist or create them
+    for folder in [output_folderA, output_folderB]:
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+            print(f"Created output folder: {folder}")
 
     # Apply the filter to all images in both input folders and save to the respective output folders
     for folder, output_folder in [(input_folderA, output_folderA), (input_folderB, output_folderB)]:
@@ -50,17 +54,12 @@ def filterImage(filter_name, input_folderA, input_folderB, output_folderA, outpu
                 input_path = os.path.join(folder, filename)
                 output_path = os.path.join(output_folder, filename)
 
-                # Read the image
-                image = cv2.imread(input_path)
-                if image is None:
-                    continue
-
-                # Apply the filter
-                filter_function(image, output_folderA)
-                filter_function(image, output_folderB)
-                # Save the filtered image
-                #cv2.imwrite(output_path, filtered_image)
-                #print(f"Processed and saved: {output_path}")
+                try:
+                    # Apply the filter
+                    filter_function(input_path, output_path)
+                    print(f"Processed and saved: {output_path}")
+                except Exception as e:
+                    print(f"Error processing {input_path}: {str(e)}")
 
 def graph(method, json):
     updated_colourmap(method, "results.json")

@@ -47,30 +47,18 @@ def block_average_png_to_json(input_folder, output_folder, hs, ws):
                 json.dump(pixels, json_file)
     print("Saved to resizedA and resizedB folders")
 
-def greyscale(input_folder, output_folder):
-    # Create the output folder if it doesn't exist
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+def greyscale(inputFile, outputFile):
+    try:
+        with Image.open(inputFile) as img:
+            # Convert the image to grayscale
+            gray_img = img.convert('L')
 
-    # List all files in the input folder
-    files = os.listdir(input_folder)
+            # Save the grayscale image to the output folder
+            gray_img.save(outputFile)
 
-    # Iterate over each file
-    for file in files:
-        # Check if the file is a PNG
-        if file.lower().endswith('.png'):
-            # Open the image
-            image_path = os.path.join(input_folder, file)
-            with Image.open(image_path) as img:
-                # Convert the image to grayscale
-                gray_img = img.convert('L')
-
-                # Save the grayscale image to the output folder
-                output_path = os.path.join(output_folder, file)
-                gray_img.save(output_path)
-
-                print(f"Converted {file} to grayscale.")
-
+            print(f"Converted {inputFile} to grayscale.")
+    except Exception as e:
+        print(f"Error processing {inputFile}: {str(e)}")
 
 def replaceColour(input_image_path, output_image_path):
     # Open an image file
