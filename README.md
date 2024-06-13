@@ -1,4 +1,4 @@
-# CLI Pipelines
+# Pipelines
 
 ## Pipeline 1
 Command: `pipeline1`
