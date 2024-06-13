@@ -31,20 +31,6 @@ This command executes Pipeline 2 operations.
 - `outputA`: Output folder A for saving results.
 - `outputB`: Output folder B for saving results.
 
-## Pipeline 3
-Command: `pipeline3`
-
-### Description
-This command executes Pipeline 3 operations involving image filtering.
-
-### Arguments
-- `filter`: Filter to apply to images.
-  - Choices: ["greyscale", "colour"]
-- `input_folderA`: Path to input folder A containing images.
-- `input_folderB`: Path to input folder B containing images.
-- `output_folderA`: Path to output folder A for saving filtered images.
-- `output_folderB`: Path to output folder B for saving filtered images.
-
 ## Resize Command
 Command: `resize`
 
