@@ -1,6 +1,6 @@
 # Pipelines
 
-To use pipelines clone the repository and cd into pipelines. Use `python pipelines.py [METHOD]` eg `python pipelines.py MAE doorA doorB outA outB`
+To use pipelines clone the repository and cd into pipelines. Use `python pipelines.py [METHOD]` eg `python pipelines.py pipeline1 MAE doorA doorB outA outB`
 
 ## Pipeline 1
 Command: `pipeline1`
