@@ -40,7 +40,8 @@ def crop_image(image_path):
         if success:
             print(f"Cropped image successfully saved to {save_path}")
             print(f"Coordinates: x={x}, y={y}, width={w}, height={h}")
-            input()
+            crop_and_save_images("doorA", "croppedA", x, y, w, h)
+            crop_and_save_images("doorB", "croppedB", x, y, w, h)
         else:
             print(f"Error: Failed to save the cropped image to {save_path}")
 
@@ -48,3 +49,31 @@ def crop_image(image_path):
     cv2.destroyAllWindows()
 
     ##x=217, y=205, width=53, height=43
+
+
+def crop_and_save_images(source, destination, x, y, w, h):
+    # List all files in the source directory
+    for filename in os.listdir(source):
+        print(filename)
+        if filename.endswith('.png'):
+            # Read the image
+            image_path = os.path.join(source, filename)
+            image = cv2.imread(image_path)
+            
+            if image is None:
+                print(f"Error: Unable to read image {image_path}. Skipping.")
+                continue
+            
+            # Crop the image
+            cropped_image = image[y:y+h, x:x+w]
+            
+            # Define the path for the cropped image
+            cropped_image_path = os.path.join(destination, filename)
+            
+            # Save the cropped image
+            success = cv2.imwrite(cropped_image_path, cropped_image)
+            
+            if success:
+                print(f"Cropped image saved to {cropped_image_path}")
+            else:
+                print(f"Error: Failed to save cropped image {cropped_image_path}")
