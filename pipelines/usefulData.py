@@ -1,3 +1,8 @@
+import json
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
 def analyze_results(results_file, method):
     # Load results from the JSON file
     with open(results_file, "r") as f:
@@ -30,8 +35,10 @@ def analyze_results(results_file, method):
     print(f"Standard deviation of {method} values: {std_dev}")
     
     # Create a box plot
+    '''
     plt.figure(figsize=(10, 6))
     plt.boxplot(df[method], vert=False, patch_artist=True, boxprops=dict(facecolor='lightblue'))
     plt.title(f'Box Plot of {method} Values')
     plt.xlabel(method)
     plt.show()
+    '''

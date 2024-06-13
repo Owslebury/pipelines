@@ -86,8 +86,6 @@ def updated_colourmap(method, results_file):
     metric_column = method if method else "metric"
     original_min_metric = door_positions_data[metric_column].min()
     original_max_metric = door_positions_data[metric_column].max()
-    print(f"Original min {metric_column}:", original_min_metric)
-    print(f"Original max {metric_column}:", original_max_metric)
 
     # Plotting
     plt.figure(figsize=(8, 6))

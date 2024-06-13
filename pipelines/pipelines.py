@@ -9,6 +9,7 @@ from graph import *
 from methods import *
 from filters import *
 from crop import *
+from usefulData import *
 
 def pipeline_1(method, x_dim=None, y_dim=None, **kwargs):
     folderA = r"C:\Users\jonat\Documents\doors\doorB"
@@ -27,6 +28,7 @@ def pipeline_1(method, x_dim=None, y_dim=None, **kwargs):
 
     iterateThroughImages(folderA, folderB, method, **kwargs)
     updated_colourmap(method, "results.json")
+    analyze_results("results.json", method)
 
 def pipeline_2(filename=None):
     crop_image(filename)
