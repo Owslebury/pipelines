@@ -78,9 +78,9 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
         "SSIM": lambda imgA, imgB: ssim(imgA, imgB, **kwargs),
         "Histogram": histogram_intersection,
         "EMD": emd,
-        "Absolute Difference": abs_diff,
-        "Correlation Coefficient": correlation,
-        "Bhattacharyya Distance": bhattacharyya
+        "Absolute": abs_diff,
+        "Correlation": correlation,
+        "Bhattacharyya": bhattacharyya
     }
 
     results = {}
@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
     # Pipeline 1
     pipeline1_parser = subparsers.add_parser("pipeline1", help="Pipeline 1")
-    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "Histogram", "EMD", "Absolute Difference", "Correlation Coefficient", "Bhattacharyya Distance"], help="Method")
+    pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "Histogram", "EMD", "Absolute", "Correlation", "Bhattacharyya"], help="Method")
     pipeline1_parser.add_argument("dimensions", nargs='*', type=int, help="Dimensions (x_dim, y_dim)")
 
     # SSIM specific arguments

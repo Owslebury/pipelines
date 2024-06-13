@@ -90,7 +90,7 @@ def updated_colourmap(method, results_file):
     # Plotting
     plt.figure(figsize=(8, 6))
     plt.scatter(door_positions_data["x"], door_positions_data["y"], c=door_positions_data[metric_column], cmap='rainbow', norm=Normalize(vmin=original_min_metric, vmax=original_max_metric))
-    plt.title(f'{metric_column} (Absolute Scale)')
+    plt.title(f'{metric_column}')
     plt.axis('off')  # Remove x and y axes
     plt.colorbar(label=metric_column)
     plt.show()
