@@ -2,7 +2,7 @@ import cv2
 import os
 
 
-def crop_image(image_path, folderA, folderB):
+def crop_image(image_path, folderA, folderB, outputFolderA, outputFolderB):
     # Step 1: Read the image
     image = cv2.imread(image_path)
 
@@ -40,8 +40,8 @@ def crop_image(image_path, folderA, folderB):
         if success:
             print(f"Cropped image successfully saved to {save_path}")
             print(f"Coordinates: x={x}, y={y}, width={w}, height={h}")
-            crop_and_save_images(folderA, "croppedA", x, y, w, h)
-            crop_and_save_images(folderB, "croppedB", x, y, w, h)
+            crop_and_save_images(folderA, outputFolderA, x, y, w, h)
+            crop_and_save_images(folderB, outputFolderB, x, y, w, h)
             print("Saved to croppedA and croppedB folders")
         else:
             print(f"Error: Failed to save the cropped image to {save_path}")
@@ -53,6 +53,11 @@ def crop_image(image_path, folderA, folderB):
 
 
 def crop_and_save_images(source, destination, x, y, w, h):
+    # Create the destination directory if it doesn't exist
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+        print(f"Created destination directory: {destination}")
+    
     # List all files in the source directory
     for filename in os.listdir(source):
         if filename.endswith('.png'):

@@ -11,11 +11,16 @@ from filters import *
 from crop import *
 from usefulData import *
 
-def pipeline_1(method, x_dim=None, y_dim=None, **kwargs):
-    folderA = r"croppedB"
-    folderB = r"croppedA"
+def pipeline_1(method, folderA, folderB, **kwargs):
+    iterateThroughImages(folderA, folderB, method, **kwargs)
+    updated_colourmap(method, "results.json")
+    analyze_results("results.json", method)
 
+def pipeline_2(filename, folderA, folderB, outputA, outputB):
+    crop_image(filename, folderA, folderB, outputA, outputB)
+    pass
 
+def resize(x_dim, y_dim, folderA, folderB):
     if x_dim is not None and y_dim is not None:
         if not (check_image_dimensions("resizedA", x_dim, y_dim) and check_image_dimensions("resizedB", x_dim, y_dim)):
             print("Resizing images to dimensions:", x_dim, y_dim)
@@ -23,18 +28,9 @@ def pipeline_1(method, x_dim=None, y_dim=None, **kwargs):
             block_average_png_to_json(folderB, "resizedB", x_dim, y_dim)
         else:
             print("Resized images with matching dimensions already exist.")
-        folderA = "resizedA"
-        folderB = "resizedB"
-
-    iterateThroughImages(folderA, folderB, method, **kwargs)
-    updated_colourmap(method, "results.json")
-    analyze_results("results.json", method)
-
-def pipeline_2(filename=None, folderA=None, folderB = None):
-    crop_image(filename, folderA, folderB)
-    pass
 
 def filterImage(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
+
     filters = {
         "greyscale": greyscale,
         "colour": replaceColour
@@ -92,11 +88,11 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
             results = json.load(f)
         
         # Check if any image has data for the specified method
-        '''
         if any(method in image_results for image_results in results.values()):
-            print(f"Results for method '{method}' already exist. Skipping processing.")
-            return
-        '''
+            user_input = input(f"Results for method '{method}' already exist. Do you want to continue processing? (yes/no): ").strip().lower()
+            if user_input != 'yes':
+                print("Skipping processing.")
+                return
 
     for filename in os.listdir(folderA):
         if filename.endswith(".png"):
@@ -156,7 +152,13 @@ if __name__ == "__main__":
     # Pipeline 1
     pipeline1_parser = subparsers.add_parser("pipeline1", help="Pipeline 1")
     pipeline1_parser.add_argument("method", choices=["PSNR", "MAE", "NCC", "SSIM", "Histogram", "EMD", "Absolute", "Correlation", "Bhattacharyya"], help="Method")
-    pipeline1_parser.add_argument("dimensions", nargs='*', type=int, help="Dimensions (x_dim, y_dim)")
+    pipeline1_parser.add_argument("folderA")
+    pipeline1_parser.add_argument("folderB")
+
+    resize_parser = subparsers.add_parser("resize", help="Resize")
+    resize_parser.add_argument("folderA")
+    resize_parser.add_argument("folderB")
+    resize_parser.add_argument("dimensions", nargs='*', type=int, help="Dimensions (x_dim, y_dim)")
 
     # SSIM specific arguments
     pipeline1_parser.add_argument("--gaussian_weights", type=bool, default=True, help="Use Gaussian weights for SSIM")
@@ -167,6 +169,8 @@ if __name__ == "__main__":
     pipeline2_parser.add_argument("filename")
     pipeline2_parser.add_argument("folderA")
     pipeline2_parser.add_argument("folderB")
+    pipeline2_parser.add_argument("outputA")
+    pipeline2_parser.add_argument("outputB")
 
     # Pipeline 3
     pipeline3_parser = subparsers.add_parser("pipeline3", help="Pipeline 3")
@@ -179,6 +183,13 @@ if __name__ == "__main__":
     graph_parser = subparsers.add_parser("graph", help="Graph")
     graph_parser.add_argument("json", help="json file")
 
+    filter_parser = subparsers.add_parser("filter", help="Filter")
+    filter_parser.add_argument("filter", choices=["greyscale", "colour"], help="Filter")
+    filter_parser.add_argument("input_folderA", help="Input folder A")
+    filter_parser.add_argument("input_folderB", help="Input folder B")
+    filter_parser.add_argument("output_folderA", help="Output folder A")
+    filter_parser.add_argument("output_folderB", help="Output folder B")
+
 
     args = parser.parse_args()
 
@@ -187,17 +198,20 @@ if __name__ == "__main__":
         if args.method == "SSIM":
             kwargs['gaussian_weights'] = args.gaussian_weights
             kwargs['sigma'] = args.sigma
-
-        if args.dimensions:
-            if len(args.dimensions) == 2:
-                pipeline_1(args.method, args.dimensions[0], args.dimensions[1], **kwargs)
-            else:
-                print("Please provide both x_dim and y_dim.")
-        else:
-            pipeline_1(args.method)
+        pipeline_1(args.method, args.folderA, args.folderB, **kwargs)
     elif args.pipeline == "pipeline2":
-        pipeline_2(args.filename, args.folderA, args.folderB)
+        pipeline_2(args.filename, args.folderA, args.folderB, args.outputA, args.outputB)
     elif args.pipeline == "pipeline3":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
     elif args.pipeline == "graph":
         graph(args.json)
+    elif args.pipeline == "resize":
+        if args.dimensions:
+            if len(args.dimensions) == 2:
+                pipeline_1(args.method, args.dimensions[0], args.dimensions[1])
+            else:
+                print("Please provide both x_dim and y_dim.")
+                graph(args.folderA, args.folderB, args.dimensions[0], args.dimensions[1])
+    elif args.pipeline == "filter":
+        filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
+
