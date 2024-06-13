@@ -38,7 +38,10 @@ def ssim(img1, img2, gaussian_weights=True, sigma=1.5):
 def histogram_intersection(imageA, imageB):
     histA = cv2.calcHist([imageA], [0], None, [256], [0, 256])
     histB = cv2.calcHist([imageB], [0], None, [256], [0, 256])
-    return float(cv2.compareHist(histA, histB, cv2.HISTCMP_INTERSECT))  # Ensure Histogram Intersection is converted to float
+    value = cv2.compareHist(histA, histB, cv2.HISTCMP_INTERSECT)
+    print(value)
+    return value  # Ensure Histogram Intersection is converted to float
+
 
 # Function to calculate Earth Mover's Distance (EMD)
 def emd(imageA, imageB):
