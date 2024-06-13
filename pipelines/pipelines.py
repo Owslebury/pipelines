@@ -62,8 +62,8 @@ def filterImage(filter_name, input_folderA, input_folderB, output_folderA, outpu
                 #cv2.imwrite(output_path, filtered_image)
                 #print(f"Processed and saved: {output_path}")
 
-def graph(json):
-    colourmap(None, "results.json")
+def graph(method, json):
+    updated_colourmap(method, "results.json")
 
 def iterateThroughImages(folderA, folderB, method, **kwargs):
     # Define comparison techniques
@@ -156,9 +156,9 @@ if __name__ == "__main__":
     pipeline1_parser.add_argument("folderB")
 
     resize_parser = subparsers.add_parser("resize", help="Resize")
+    resize_parser.add_argument("dimensions", nargs='*', type=int, help="Dimensions (x_dim, y_dim)")
     resize_parser.add_argument("folderA")
     resize_parser.add_argument("folderB")
-    resize_parser.add_argument("dimensions", nargs='*', type=int, help="Dimensions (x_dim, y_dim)")
 
     # SSIM specific arguments
     pipeline1_parser.add_argument("--gaussian_weights", type=bool, default=True, help="Use Gaussian weights for SSIM")
@@ -181,6 +181,7 @@ if __name__ == "__main__":
     pipeline3_parser.add_argument("output_folderB", help="Output folder B")
 
     graph_parser = subparsers.add_parser("graph", help="Graph")
+    graph_parser.add_argument("method", help="json file")
     graph_parser.add_argument("json", help="json file")
 
     filter_parser = subparsers.add_parser("filter", help="Filter")
@@ -204,14 +205,13 @@ if __name__ == "__main__":
     elif args.pipeline == "pipeline3":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
     elif args.pipeline == "graph":
-        graph(args.json)
+        graph(args.method, args.json)
     elif args.pipeline == "resize":
         if args.dimensions:
             if len(args.dimensions) == 2:
-                pipeline_1(args.method, args.dimensions[0], args.dimensions[1])
+                resize(args.dimensions[0], args.dimensions[1], args.folderA, args.folderB)
             else:
                 print("Please provide both x_dim and y_dim.")
-                graph(args.folderA, args.folderB, args.dimensions[0], args.dimensions[1])
     elif args.pipeline == "filter":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
 

@@ -45,6 +45,7 @@ def block_average_png_to_json(input_folder, output_folder, hs, ws):
             json_path = os.path.join(output_folder, os.path.splitext(filename)[0] + ".json")
             with open(json_path, 'w') as json_file:
                 json.dump(pixels, json_file)
+    print("Saved to resizedA and resizedB folders")
 
 def greyscale(input_folder, output_folder):
     # Create the output folder if it doesn't exist
