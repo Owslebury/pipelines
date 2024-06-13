@@ -68,6 +68,7 @@ def graph(json):
     colourmap(None, "results.json")
 
 def iterateThroughImages(folderA, folderB, method, **kwargs):
+    # Define comparison techniques
     comparison_techniques = {
         "PSNR": psnr,
         "MAE": mae,
@@ -78,31 +79,48 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
         "Absolute Difference": abs_diff,
         "Correlation Coefficient": correlation,
         "Bhattacharyya Distance": bhattacharyya
-    }    
+    }
 
     results = {}
+
+    # Load existing results if available
+    results_file = "results.json"
+    if os.path.exists(results_file):
+        with open(results_file, "r") as f:
+            results = json.load(f)
+        
+        # Check if any image has data for the specified method
+        if any(method in image_results for image_results in results.values()):
+            print(f"Results for method '{method}' already exist. Skipping processing.")
+            return
 
     for filename in os.listdir(folderA):
         if filename.endswith(".png"):
             print(filename)
+
             imageA = cv2.imread(os.path.join(folderA, filename))
             imageB = cv2.imread(os.path.join(folderB, filename))
             if imageA is None or imageB is None:
                 continue
-            image_results = {}
 
             function = comparison_techniques[method]
             try:
                 result = function(imageA, imageB)
-                image_results[method] = result
             except Exception as e:
-                image_results[method] = str(e)
-            results[filename] = image_results
+                result = str(e)
 
-    with open("results.json", "w") as f:
+            # Ensure the filename entry exists in results
+            if filename not in results:
+                results[filename] = {}
+
+            # Update the method result for this image
+            results[filename][method] = result
+
+    # Save updated results
+    with open(results_file, "w") as f:
         json.dump(results, f)
 
-    print("Saved to results.json")
+    print("Results saved to results.json")
 
 def check_image_dimensions(folder, x_dim, y_dim):
     # Check if folder exists
