@@ -12,8 +12,8 @@ from crop import *
 from usefulData import *
 
 def pipeline_1(method, x_dim=None, y_dim=None, **kwargs):
-    folderA = r"C:\Users\jonat\Documents\doors\doorB"
-    folderB = r"C:\Users\jonat\Documents\doors\doorA"
+    folderA = r"croppedB"
+    folderB = r"croppedA"
 
 
     if x_dim is not None and y_dim is not None:
@@ -30,8 +30,8 @@ def pipeline_1(method, x_dim=None, y_dim=None, **kwargs):
     updated_colourmap(method, "results.json")
     analyze_results("results.json", method)
 
-def pipeline_2(filename=None):
-    crop_image(filename)
+def pipeline_2(filename=None, folderA=None, folderB = None):
+    crop_image(filename, folderA, folderB)
     pass
 
 def filterImage(filter_name, input_folderA, input_folderB, output_folderA, output_folderB):
@@ -92,9 +92,11 @@ def iterateThroughImages(folderA, folderB, method, **kwargs):
             results = json.load(f)
         
         # Check if any image has data for the specified method
+        '''
         if any(method in image_results for image_results in results.values()):
             print(f"Results for method '{method}' already exist. Skipping processing.")
             return
+        '''
 
     for filename in os.listdir(folderA):
         if filename.endswith(".png"):
@@ -163,6 +165,8 @@ if __name__ == "__main__":
     # Pipeline 2
     pipeline2_parser = subparsers.add_parser("pipeline2", help="Pipeline 2")
     pipeline2_parser.add_argument("filename")
+    pipeline2_parser.add_argument("folderA")
+    pipeline2_parser.add_argument("folderB")
 
     # Pipeline 3
     pipeline3_parser = subparsers.add_parser("pipeline3", help="Pipeline 3")
@@ -192,7 +196,7 @@ if __name__ == "__main__":
         else:
             pipeline_1(args.method)
     elif args.pipeline == "pipeline2":
-        pipeline_2(args.filename)
+        pipeline_2(args.filename, args.folderA, args.folderB)
     elif args.pipeline == "pipeline3":
         filterImage(args.filter, args.input_folderA, args.input_folderB, args.output_folderA, args.output_folderB)
     elif args.pipeline == "graph":
